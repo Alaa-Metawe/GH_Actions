@@ -1,15 +1,21 @@
 name: Workflow
 on:
-  push:
-  branches:
-    - main
+   push:
+     branches:
+       - main
 
 jobs:
   example-job:
-  runs-on: ubunto-latest
+    runs-on: ubunto-latest
 
-steps:
-  - name: Run Welcome MessagE
-    run: echo "First GitHub Actions Trial"
+    steps:
+      - name: Run Welcome MessagE
+        run: echo "First GitHub Actions Trial"
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4.2.2
+
+      - name: list files
+        run: ls -la
 
    
