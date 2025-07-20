@@ -1,0 +1,57 @@
+name: Manual Deployment Trigger 🚀
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+      send_notification:
+        description: 'Send Slack notification?'
+        required: false
+        default: false
+        type: boolean
+      version_tag:
+        description: 'Specific version tag to deploy (e.g., v1.2.3)'
+        required: false
+        type: string
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }} # Uses the selected environment
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install Dependencies
+        run: |
+          echo "Installing dependencies for ${{ github.event.inputs.environment }}..."
+          # Example: npm install or pip install -r requirements.txt
+
+      - name: Deploy Application
+        run: |
+          echo "Deploying application to ${{ github.event.inputs.environment }}..."
+          # Replace with your actual deployment commands, e.g.,
+          # Deploy using a specific version if provided
+          if [ -n "${{ github.event.inputs.version_tag }}" ]; then
+            echo "Deploying version: ${{ github.event.inputs.version_tag }}"
+            # your_deploy_script --env ${{ github.event.inputs.environment }} --version ${{ github.event.inputs.version_tag }}
+          else
+            echo "Deploying latest from branch."
+            # your_deploy_script --env ${{ github.event.inputs.environment }}
+          fi
+        env:
+          MY_API_KEY: ${{ secrets.API_KEY_FOR_DEPLOY }} # Example of using secrets
+
+      - name: Send Deployment Notification
+        if: ${{ github.event.inputs.send_notification == true }}
+        run: |
+          echo "Sending Slack notification about deployment to ${{ github.event.inputs.environment }}..."
+          # Example: curl -X POST -H 'Content-type: application/json' --data '{"text":"Deployment to ${{ github.event.inputs.environment }} successful!"}' ${{ secrets.SLACK_WEBHOOK_URL }}
