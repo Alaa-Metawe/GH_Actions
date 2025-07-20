@@ -1,0 +1,15 @@
+name: Workflow
+on:
+  push:
+  branches:
+    - main
+
+jobs:
+  example-job:
+  runs-on: ubunto-latest
+
+steps:
+  - name: Run Welcome MessagE
+    run: echo "First GitHub Actions Trial"
+
+   
