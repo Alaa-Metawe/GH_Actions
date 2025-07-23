@@ -1,0 +1,14 @@
+on:
+  workflow_dispatch:
+
+jobs:
+  job_1: 
+    runs_on: ubunto_latest
+    steps: 
+      - run: |
+          npm install
+          npm run build
+        working-directory: ./temp
+        shell: bash
+      - run: print $ENV
+        shell: parl {0}
