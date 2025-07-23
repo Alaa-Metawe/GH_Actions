@@ -2,7 +2,7 @@
 FROM alpine:latest
 
 # Set the working directory
-WORKDIR /app
+WORKDIR .
 
 # Copy nothing for now, just to have a valid Dockerfile
 # COPY . .
