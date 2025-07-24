@@ -41,29 +41,32 @@ jobs:
         with:
           images: alaametawe/my-app
 
-      # --- NEW DIAGNOSTIC STEP ---
       - name: Debug metadata action output
         run: |
           echo "Generated tags by metadata-action: ${{ steps.meta.outputs.tags }}"
           echo "Generated labels by metadata-action: ${{ steps.meta.outputs.labels }}"
-      # --- END NEW DIAGNOSTIC STEP ---
 
-      - name: Build and push Docker image
-        id: push
-        # CHANGE THIS LINE FROM @v5 TO @v4
-        uses: docker/build-push-action@v4 
-        with:
-          context: ./my-app
-          file: Dockerfile
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+      # --- NEW: Manual Build and push Docker image (DEBUG) ---
+      - name: Manual Build and push Docker image (DEBUG)
+        env:
+          BUILD_TAGS: ${{ steps.meta.outputs.tags }}
+          BUILD_LABELS: ${{ steps.meta.outputs.labels }}
+        run: |
+          echo "--- Starting manual buildx command ---"
+          echo "Current working directory: $(pwd)"
+          echo "Contents of my-app directory immediately before buildx:"
+          ls -la ./my-app
 
-      - name: Generate artifact attestation
-        uses: actions/attest-build-provenance@v1
-        with:
-          subject-name: index.docker.io/alaametawe/my-app
-          subject-digest: ${{ steps.push.outputs.digest }}
-          push-to-registry: true
+          # Execute the buildx command directly
+          /usr/bin/docker buildx build \
+            --file Dockerfile \
+            --tag "${BUILD_TAGS}" \
+            --label "${BUILD_LABELS}" \
+            --push \
+            ./my-app
+          echo "--- Manual buildx command finished ---"
 
+      # NOTE: Remove the 'Generate artifact attestation' for now,
+      # as it relies on 'steps.push.outputs.digest' which won't be set by a manual 'run' step.
+      # We can add it back later if the build works.
 
