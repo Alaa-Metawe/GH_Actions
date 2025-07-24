@@ -16,9 +16,9 @@ jobs:
       id-token: write
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v4 # Latest recommended stable version
+        uses: actions/checkout@v4
 
-      # --- Diagnostic steps (you can remove these AFTER the build works consistently) ---
+      # --- Diagnostic steps (keep these for now) ---
       - name: Debug - List contents of repository root
         run: ls -la .
 
@@ -30,20 +30,26 @@ jobs:
       # --- End of diagnostic steps ---
 
       - name: Log in to Docker Hub
-        uses: docker/login-action@v3 # Already updated, good!
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Extract metadata (tags, labels) for Docker
-        # Updated to latest stable major version
+        id: meta
         uses: docker/metadata-action@v5
         with:
           images: alaametawe/my-app
 
+      # --- NEW DIAGNOSTIC STEP ---
+      - name: Debug metadata action output
+        run: |
+          echo "Generated tags by metadata-action: ${{ steps.meta.outputs.tags }}"
+          echo "Generated labels by metadata-action: ${{ steps.meta.outputs.labels }}"
+      # --- END NEW DIAGNOSTIC STEP ---
+
       - name: Build and push Docker image
         id: push
-        # Updated to latest stable major version
         uses: docker/build-push-action@v5
         with:
           context: ./my-app
@@ -53,10 +59,10 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Generate artifact attestation
-        # Updated to latest stable major version
-        uses: actions/attest-build-provenance@v1 # v1 is the latest stable tag as of now
+        uses: actions/attest-build-provenance@v1
         with:
           subject-name: index.docker.io/alaametawe/my-app
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
+
 
