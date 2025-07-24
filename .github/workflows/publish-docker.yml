@@ -16,9 +16,9 @@ jobs:
       id-token: write
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4 # Latest recommended stable version
 
-      # --- Diagnostic steps (you can remove these after the build works) ---
+      # --- Diagnostic steps (you can remove these AFTER the build works consistently) ---
       - name: Debug - List contents of repository root
         run: ls -la .
 
@@ -30,23 +30,33 @@ jobs:
       # --- End of diagnostic steps ---
 
       - name: Log in to Docker Hub
-        # CORRECTED: Use the stable v3 tag for docker/login-action
-        uses: docker/login-action@v3
+        uses: docker/login-action@v3 # Already updated, good!
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
+
       - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+        # Updated to latest stable major version
+        uses: docker/metadata-action@v5
         with:
-          images: my-docker-hub-namespace/my-docker-hub-repository
+          images: alaametawe/my-app
+
       - name: Build and push Docker image
         id: push
-        uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
+        # Updated to latest stable major version
+        uses: docker/build-push-action@v5
         with:
-          context: ./my-app 
-          file: Dockerfile  
+          context: ./my-app
+          file: Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Generate artifact attestation
+        # Updated to latest stable major version
+        uses: actions/attest-build-provenance@v1 # v1 is the latest stable tag as of now
+        with:
+          subject-name: index.docker.io/alaametawe/my-app
+          subject-digest: ${{ steps.push.outputs.digest }}
+          push-to-registry: true
 
