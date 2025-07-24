@@ -1,11 +1,11 @@
-# Use a minimal base image
-FROM alpine:latest
+# Use a lightweight Nginx base image
+FROM nginx:alpine
 
-# Set the working directory
-WORKDIR .
+# Copy the local index.html file into the Nginx web root directory
+COPY index.html /usr/share/nginx/html/index.html
 
-# Copy nothing for now, just to have a valid Dockerfile
-# COPY . .
+# Expose port 80 to allow incoming HTTP connections
+EXPOSE 80
 
-# Keep the container running (optional, for testing purposes)
-CMD ["sleep", "infinity"]
+# Start Nginx when the container launches
+CMD ["nginx", "-g", "daemon off;"]
