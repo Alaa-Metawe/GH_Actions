@@ -1,5 +1,5 @@
 # Use a lightweight Nginx base image
-FROM nginx:alpine
+FROM alpine:latest
 
 # Copy the local index.html file into the Nginx web root directory
 COPY index.html /usr/share/nginx/html/index.html
