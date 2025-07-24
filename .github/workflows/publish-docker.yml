@@ -57,15 +57,6 @@ jobs:
           echo "Contents of my-app directory immediately before buildx:"
           ls -la ./my-app
 
-          # Execute the buildx command directly
-          /usr/bin/docker buildx build \
-            --file Dockerfile \
-            --tag "${BUILD_TAGS}" \
-            --label "${BUILD_LABELS}" \
-            --push \
-            ./my-app
-          echo "--- Manual buildx command finished ---"
-
       # NOTE: Remove the 'Generate artifact attestation' for now,
       # as it relies on 'steps.push.outputs.digest' which won't be set by a manual 'run' step.
       # We can add it back later if the build works.
