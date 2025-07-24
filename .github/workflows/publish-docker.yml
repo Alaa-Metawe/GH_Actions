@@ -50,7 +50,8 @@ jobs:
 
       - name: Build and push Docker image
         id: push
-        uses: docker/build-push-action@v5
+        # CHANGE THIS LINE FROM @v5 TO @v4
+        uses: docker/build-push-action@v4 
         with:
           context: ./my-app
           file: Dockerfile
