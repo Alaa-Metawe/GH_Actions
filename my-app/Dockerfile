@@ -1,11 +1,11 @@
-# Use a lightweight Nginx base image
+# Use a lightweight base image
 FROM alpine:latest
 
-# Copy the local index.html file into the Nginx web root directory
-COPY index.html /usr/share/nginx/html/index.html
+# Copy a simple script into the root directory of the container
+COPY hello.sh /hello.sh
 
-# Expose port 80 to allow incoming HTTP connections
-EXPOSE 80
+# Make the script executable
+RUN chmod +x /hello.sh
 
-# Start Nginx when the container launches
-CMD ["nginx", "-g", "daemon off;"]
+# Define the command to run when the container starts
+CMD ["/hello.sh"]
